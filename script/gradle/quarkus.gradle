@@ -1,0 +1,105 @@
+def quarkusConfigTask = tasks.register("quarkusConfig") {
+  group "my quarkus"
+  doLast {
+    //  quarkus properties
+    System.setProperty("quarkus.container-image.group", "${project.group}")
+    System.setProperty("quarkus.container-image.name", "${rootProject.name}-${project.name}")
+    System.setProperty("quarkus.container-image.tag", "${project.version}")
+    System.setProperty("quarkus.container-image.push", "false")
+//        System.setProperty("quarkus.container-image.registry", "xxx")
+//        System.setProperty("quarkus.container-image.username", "xxx")
+//        System.setProperty("quarkus.container-image.password", "xxx")
+    System.setProperty("quarkus.container-image.insecure", "false")
+//  // use jib
+//  System.setProperty("quarkus.container-image.builder", "jib")
+//  //  jib properties
+//  System.setProperty("quarkus.jib.environment-variables", "USE_CURRENT_TIMESTAMP")
+//  System.setProperty(
+//    "quarkus.jib.base-jvm-image",
+//    "adoptopenjdk/openjdk11:alpine-jre@sha256:86ea95f6f46328a7140360f0a92b6bf44a858e8f8aa838ac12cfefb54ff89d66"
+//  )
+//  System.setProperty("quarkus.jib.base-native-image", "registry.access.redhat.com/ubi8/ubi-minimal")
+  }
+}
+
+tasks.register("fatJar") {
+  group "my quarkus"
+  doLast {
+    System.setProperty("quarkus.package.type", "uber-jar")
+    System.setProperty("quarkus.container-image.build", "false")
+  }
+
+  dependsOn(quarkusConfigTask)
+  finalizedBy(quarkusBuild)
+}
+
+tasks.register("fastJar") {
+  group "my quarkus"
+  doLast {
+    System.setProperty("quarkus.package.type", "jar")
+    System.setProperty("quarkus.container-image.build", "false")
+  }
+
+  dependsOn(quarkusConfigTask)
+  finalizedBy(quarkusBuild)
+}
+
+tasks.register("fastJarContainer") {
+  group "my quarkus"
+  doLast {
+    System.setProperty("quarkus.package.type", "jar")
+    System.setProperty("quarkus.container-image.build", "true")
+  }
+
+  dependsOn(quarkusConfigTask)
+  finalizedBy(quarkusBuild)
+}
+
+def nativeBuildArgs = [
+  "--no-fallback",
+  "-H:+ReportExceptionStackTraces",
+  "--report-unsupported-elements-at-runtime",
+//      "-H:+PrintUniverse",
+  "--features=org.graalvm.home.HomeFinderFeature",
+  "-H:+PlatformInterfaceCompatibilityMode",
+  // "-H:+TolerateBuilderClassesOnImageClasspath",
+  "-J--enable-preview",
+]
+
+tasks.register("native") {
+  group "my quarkus"
+  doLast {
+    System.setProperty("quarkus.package.type", "native")
+    System.setProperty("quarkus.native.container-build", "false")
+    System.setProperty("quarkus.container-image.build", "false")
+    System.setProperty(
+      "quarkus.native.additional-build-args",
+      nativeBuildArgs.join(",")
+    )
+  }
+
+  dependsOn(quarkusConfigTask)
+  finalizedBy(quarkusBuild)
+}
+
+tasks.register("nativeContainer") {
+  group "my quarkus"
+  doLast {
+    System.setProperty("quarkus.package.type", "native")
+    System.setProperty("quarkus.native.container-build", "true")
+    System.setProperty("quarkus.native.builder-image", "quay.io/quarkus/ubi-quarkus-native-image:21.2-java11")
+    System.setProperty("quarkus.container-image.build", "true")
+    System.setProperty("quarkus.container-image.name", "${rootProject.name}-${project.name}-native")
+    System.setProperty(
+      "quarkus.native.additional-build-args",
+      nativeBuildArgs.join(",")
+    )
+  }
+
+  dependsOn(quarkusConfigTask)
+  finalizedBy(quarkusBuild)
+}
+
+tasks.named("build").configure {
+  dependsOn(tasks.named("fatJar"))
+}

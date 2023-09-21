@@ -1,0 +1,35 @@
+plugins {
+  alias(libs.plugins.quarkus)
+}
+
+dependencies {
+  // logging
+  implementation(libs.logback)
+
+  // jackson json
+  implementation(libs.bundles.jackson)
+
+  // record builder
+  annotationProcessor(libs.record.builder.processor)
+  implementation(libs.record.builder)
+
+  // mapstruct
+  annotationProcessor(libs.mapstruct.processor)
+  implementation(libs.mapstruct)
+
+  // quarkus
+  implementation(enforcedPlatform(libs.quarkus))
+  implementation 'io.quarkus:quarkus-resteasy-reactive-jackson'
+  implementation 'io.quarkus:quarkus-mutiny'
+  implementation 'io.quarkus:quarkus-hibernate-validator'
+  implementation 'io.quarkus:quarkus-smallrye-openapi'
+  implementation 'io.quarkus:quarkus-resteasy-reactive'
+  implementation 'io.quarkus:quarkus-hibernate-orm-panache'
+  implementation 'io.quarkiverse.jdbc:quarkus-jdbc-sqlite:3.0.6'
+  implementation 'io.quarkus:quarkus-arc'
+  implementation 'io.quarkus:quarkus-hibernate-orm'
+  testImplementation 'io.quarkus:quarkus-junit5'
+  testImplementation 'io.rest-assured:rest-assured'
+}
+
+apply from: "../script/gradle/quarkus.gradle"
