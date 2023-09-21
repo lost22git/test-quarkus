@@ -6,7 +6,7 @@ import org.mapstruct.factory.Mappers;
 @Mapper
 public interface FighterMapper {
 
-    static FighterMapper instance = Mappers.getMapper(FighterMapper.class);
+    FighterMapper instance = Mappers.getMapper(FighterMapper.class);
 
     Fighter fromFighterCreate(FighterCreate fighterCreate);
 }
