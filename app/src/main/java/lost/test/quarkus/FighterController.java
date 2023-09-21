@@ -1,17 +1,16 @@
 package lost.test.quarkus;
 
+import static java.time.OffsetDateTime.now;
+import static java.time.ZoneOffset.UTC;
+import static lost.test.quarkus.Result.ok;
+
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
+import java.util.List;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
-
-import java.util.List;
-
-import static java.time.OffsetDateTime.now;
-import static java.time.ZoneOffset.UTC;
-import static lost.test.quarkus.Result.ok;
 
 @Tag(name = "fighter", description = "fighter api")
 @Path("/fighter")
