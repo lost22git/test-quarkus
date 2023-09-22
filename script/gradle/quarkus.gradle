@@ -60,7 +60,6 @@ def nativeBuildArgs = [
   "-H:+ReportExceptionStackTraces",
   "--report-unsupported-elements-at-runtime",
 //      "-H:+PrintUniverse",
-  "--features=org.graalvm.home.HomeFinderFeature",
   "-H:+PlatformInterfaceCompatibilityMode",
   // "-H:+TolerateBuilderClassesOnImageClasspath",
   "-J--enable-preview",
