@@ -1,3 +1,5 @@
+import java.util.stream.Stream
+
 def quarkusConfigTask = tasks.register("quarkusConfig") {
   group "my quarkus"
   doLast {
@@ -59,10 +61,16 @@ def nativeBuildArgs = [
   "--no-fallback",
   "-H:+ReportExceptionStackTraces",
   "--report-unsupported-elements-at-runtime",
-//      "-H:+PrintUniverse",
   "-H:+PlatformInterfaceCompatibilityMode",
-  // "-H:+TolerateBuilderClassesOnImageClasspath",
-  "-J--enable-preview",
+  "-J--enable-preview"
+]
+
+
+def staticNativeBuildArgs = [
+  "--native-image-info",
+  "--static",
+  "--libc=musl",
+  "--native-compiler-options=-L${rootDir}/lib"
 ]
 
 tasks.register("native") {
@@ -71,10 +79,18 @@ tasks.register("native") {
     System.setProperty("quarkus.package.type", "native")
     System.setProperty("quarkus.native.container-build", "false")
     System.setProperty("quarkus.container-image.build", "false")
-    System.setProperty(
-      "quarkus.native.additional-build-args",
-      nativeBuildArgs.join(",")
-    )
+
+    if (project.hasProperty("static")) {
+      System.setProperty(
+        "quarkus.native.additional-build-args",
+        (nativeBuildArgs + staticNativeBuildArgs).join(",")
+      )
+    } else {
+      System.setProperty(
+        "quarkus.native.additional-build-args",
+        nativeBuildArgs.join(",")
+      )
+    }
   }
 
   dependsOn(quarkusConfigTask)
