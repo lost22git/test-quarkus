@@ -1,6 +1,12 @@
 
 ## Requirement
 
+install musl
+
+```shell
+apt install musl-dev musl-tools
+```
+
 install graalvm jdk-21
 
 ```shell
