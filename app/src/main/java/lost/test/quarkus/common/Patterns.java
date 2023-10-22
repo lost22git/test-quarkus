@@ -1,4 +1,4 @@
-package lost.test.quarkus;
+package lost.test.quarkus.common;
 
 public class Patterns {
     /**

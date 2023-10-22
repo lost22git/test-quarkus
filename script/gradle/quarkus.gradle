@@ -60,8 +60,7 @@ tasks.register("fastJarContainer") {
 def nativeBuildArgs = [
   "--no-fallback",
   "-H:+ReportExceptionStackTraces",
-  "--report-unsupported-elements-at-runtime",
-  "-H:+PlatformInterfaceCompatibilityMode",
+  // "--report-unsupported-elements-at-runtime",
   "-J--enable-preview"
 ]
 

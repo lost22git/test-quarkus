@@ -1,11 +1,12 @@
-package lost.test.quarkus;
-
-import static java.util.Collections.emptyList;
+package lost.test.quarkus.common;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
+
 import java.util.Arrays;
 import java.util.List;
+
+import static java.util.Collections.emptyList;
 
 @Converter
 public class StringListConverter implements AttributeConverter<List<String>, String> {

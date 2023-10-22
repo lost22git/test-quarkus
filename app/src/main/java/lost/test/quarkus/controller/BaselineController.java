@@ -1,20 +1,25 @@
-package lost.test.quarkus;
+package lost.test.quarkus.controller;
 
 import io.smallrye.common.annotation.NonBlocking;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
+import lost.test.quarkus.common.Result;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
-import static lost.test.quarkus.Result.ok;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
+import static jakarta.ws.rs.core.MediaType.TEXT_PLAIN;
+import static lost.test.quarkus.common.Result.ok;
 
+@Tag(name = "Baseline API")
 @Path("/baseline")
 public class BaselineController {
 
     @NonBlocking
     @GET
     @Path("/text")
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(TEXT_PLAIN)
     public String text() {
         return "lost";
     }
@@ -23,7 +28,7 @@ public class BaselineController {
     @NonBlocking
     @GET
     @Path("/json")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
     public Result<String> json() {
         return ok("lost");
     }
