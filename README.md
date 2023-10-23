@@ -19,3 +19,9 @@ sdk install java 21-graalce
 ```shell
 ./gradlew clean && ./gradlew native -Pstatic -x test
 ```
+
+
+## Appendix
+
+[postgresql range type and btree_gist extension](https://www.postgresql.org/docs/current/rangetypes.html)
+

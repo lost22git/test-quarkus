@@ -2,8 +2,6 @@ package lost.test.quarkus.common;
 
 import io.hypersistence.utils.hibernate.type.range.Range;
 
-import java.time.ZonedDateTime;
-
 public class Ranges {
 
     public static <T extends Comparable<? super T>> Range<T> union(Range<T> t1,

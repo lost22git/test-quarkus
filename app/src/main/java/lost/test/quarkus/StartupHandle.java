@@ -4,7 +4,6 @@ import io.quarkus.arc.profile.IfBuildProfile;
 import io.quarkus.runtime.StartupEvent;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
-import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lost.test.quarkus.entity.Fighter;
 import lost.test.quarkus.entity.Match;
@@ -12,6 +11,7 @@ import lost.test.quarkus.entity.MatchFighter;
 import lost.test.quarkus.entity.MatchRound;
 import lost.test.quarkus.mapper.FighterMapper;
 import lost.test.quarkus.model.FighterCreateParam;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +21,8 @@ import static java.time.ZonedDateTime.now;
 
 @ApplicationScoped
 public class StartupHandle {
+    @ConfigProperty(name = "quarkus.http.port")
+    int port;
 
     record StartupInfo(
         long pid,
@@ -36,7 +38,6 @@ public class StartupHandle {
     public void initDb(@Observes
                        StartupEvent startupEvent
     ) {
-
         LOG.info("清空所有表");
         MatchRound.deleteAll();
         MatchFighter.deleteAll();
@@ -64,14 +65,12 @@ public class StartupHandle {
         Fighter.flush();
         LOG.info("初始化数据，完成");
 
-//        var startupInfo = new StartupInfo(ProcessHandle.current().pid(), httpServer.actualPort(),
-// Runtime.version());
-//        LOG.info("Startup info: {}", startupInfo);
+        var startupInfo = new StartupInfo(ProcessHandle.current().pid(), port, Runtime.version());
+        LOG.info("Startup info: {}", startupInfo);
     }
 
 
     @IfBuildProfile("prod")
     public void print(@Observes StartupEvent startupEvent) {
-        System.out.println("-----------> test prod");
     }
 }

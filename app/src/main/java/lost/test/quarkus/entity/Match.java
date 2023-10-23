@@ -9,7 +9,9 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.hibernate.annotations.Type;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Schema(description = "格斗比赛")
 @RegisterForReflection
@@ -40,4 +42,34 @@ public class Match extends PanacheEntity {
 
     @Schema(description = "最近更新时间")
     public ZonedDateTime updatedAt;
+
+    public Match setFighters(List<Fighter> fighters,
+                             Range<ZonedDateTime> timeRange) {
+        var matchFighters = fighters.stream().map(v -> {
+            var matchFighter = new MatchFighter();
+            matchFighter.fighter = v;
+            matchFighter.timeRange = timeRange;
+            matchFighter.match = this;
+            return matchFighter;
+        }).collect(Collectors.toSet());
+        this.matchFighters = matchFighters;
+        return this;
+    }
+
+    public Match mergeFighters(List<Fighter> foundFighters,
+                               Range<ZonedDateTime> timeRange) {
+        var addMatchFighters = foundFighters.stream().map(v -> {
+            var matchFighter = new MatchFighter();
+            matchFighter.timeRange = timeRange;
+            matchFighter.match = this;
+            matchFighter.fighter = v;
+            return matchFighter;
+        }).collect(Collectors.toSet());
+
+        this.matchFighters.retainAll(addMatchFighters);
+        this.matchFighters.forEach(v -> v.timeRange = timeRange);
+        this.matchFighters.addAll(addMatchFighters);
+
+        return this;
+    }
 }

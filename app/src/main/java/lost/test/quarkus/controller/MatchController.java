@@ -8,7 +8,6 @@ import lost.test.quarkus.common.Ranges;
 import lost.test.quarkus.common.Result;
 import lost.test.quarkus.entity.Fighter;
 import lost.test.quarkus.entity.Match;
-import lost.test.quarkus.entity.MatchFighter;
 import lost.test.quarkus.entity.MatchRound;
 import lost.test.quarkus.model.MatchCreateParam;
 import lost.test.quarkus.model.MatchEditParam;
@@ -17,7 +16,6 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static java.time.ZonedDateTime.now;
@@ -36,24 +34,51 @@ public class MatchController {
         var timeRange = matchCreateParam.timeRange();
         var fighterIds = matchCreateParam.fighterIds();
 
-        var foundFighters = Fighter.find("where id in (?1)", fighterIds).list();
+        var foundFighters = Fighter.find("where id in (?1)", fighterIds).list().stream().map(Fighter.class::cast).toList();
         if (foundFighters.isEmpty())
             throw new MyError("fighter不存在");
 
         var match = new Match();
-        var matchFighters = foundFighters.stream().map(v -> {
-            var matchFighter = new MatchFighter();
-            matchFighter.fighter = (Fighter) v;
-            matchFighter.timeRange = timeRange;
-            matchFighter.match = match;
-            return matchFighter;
-        }).collect(Collectors.toSet());
-        match.matchFighters = matchFighters;
+        match.setFighters(foundFighters, timeRange);
         match.timeRange = timeRange;
         match.createdAt = now();
         match.persistAndFlush();
 
         return ok(match);
+    }
+
+    @Operation(summary = "编辑一个 match")
+    @PUT
+    @Path("")
+    @Produces(APPLICATION_JSON)
+    @Consumes(APPLICATION_JSON)
+    @Transactional
+    public Result<Match> editMatch(@Valid MatchEditParam matchEditParam) {
+        var matchId = matchEditParam.matchId();
+        var fighterIds = matchEditParam.fighterIds();
+        var timeRange = matchEditParam.timeRange();
+
+        // 检查添加的 fighterIds 是否有效
+        var foundFighters = Fighter.find("where id in (?1)", fighterIds).list()
+            .stream().map(Fighter.class::cast).toList();
+        if (foundFighters.isEmpty())
+            throw new MyError("fighters不存在");
+
+        // 检查 matchId 是否有效
+        var foundMatch = (Match) Match.findById(matchId);
+        if (foundMatch == null) throw new MyError("match不存在");
+
+        // 检查 timeRange 是否有效
+        var unionRange = foundMatch.matchRounds.stream().map(v -> v.timeRange).reduce(Ranges::union);
+        if (unionRange.isPresent() && !timeRange.contains(unionRange.get()))
+            throw new MyError("timeRange范围小于已存在的MatchRound.timeRange");
+
+        foundMatch.mergeFighters(foundFighters, timeRange);
+        foundMatch.timeRange = timeRange;
+        foundMatch.updatedAt = now();
+        foundMatch.persistAndFlush();
+
+        return ok(foundMatch);
     }
 
     @Operation(summary = "删除一个 match")
@@ -124,47 +149,4 @@ public class MatchController {
         return ok(MatchRound.findById(id));
     }
 
-    @Operation(summary = "编辑一个 match")
-    @PUT
-    @Path("")
-    @Produces(APPLICATION_JSON)
-    @Consumes(APPLICATION_JSON)
-    @Transactional
-    public Result<Match> editMatch(@Valid MatchEditParam matchEditParam) {
-        var matchId = matchEditParam.matchId();
-        var fighterIds = matchEditParam.fighterIds();
-        var timeRange = matchEditParam.timeRange();
-
-        // 检查添加的 fighterIds 是否有效
-        var foundFighters = Fighter.find("where id in (?1)", fighterIds).list()
-            .stream().map(Fighter.class::cast).toList();
-        if (foundFighters.isEmpty())
-            throw new MyError("fighters不存在");
-
-        // 检查 matchId 是否有效
-        var foundMatch = (Match) Match.findById(matchId);
-        if (foundMatch == null) throw new MyError("match不存在");
-
-        // 检查 timeRange 是否有效
-        var unionRange = foundMatch.matchRounds.stream().map(v -> v.timeRange).reduce(Ranges::union);
-        if (unionRange.isPresent() && !timeRange.contains(unionRange.get()))
-            throw new MyError("timeRange范围小于已存在的MatchRound.timeRange");
-
-        var addMatchFighters = foundFighters.stream().map(v -> {
-            var matchFighter = new MatchFighter();
-            matchFighter.timeRange = timeRange;
-            matchFighter.match = foundMatch;
-            matchFighter.fighter = v;
-            return matchFighter;
-        }).collect(Collectors.toSet());
-
-        foundMatch.matchFighters.retainAll(addMatchFighters);
-        foundMatch.matchFighters.forEach(v -> v.timeRange = timeRange);
-        foundMatch.matchFighters.addAll(addMatchFighters);
-        foundMatch.timeRange = timeRange;
-        foundMatch.updatedAt = now();
-        foundMatch.persistAndFlush();
-
-        return ok(foundMatch);
-    }
 }

@@ -1,7 +1,6 @@
 package lost.test.quarkus.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import io.hypersistence.utils.hibernate.type.range.PostgreSQLRangeType;
 import io.hypersistence.utils.hibernate.type.range.Range;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
