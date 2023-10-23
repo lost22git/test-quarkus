@@ -17,23 +17,23 @@ import java.util.stream.Collectors;
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.LAZY;
 
-@Schema(description = "比赛回合")
+@Schema(title = "MatchRound")
 @RegisterForReflection
 @Entity
 @Table(name = "match_round")
 public class MatchRound extends PanacheEntity {
     @JsonIgnore
-    @Schema(description = "比赛")
+    @Schema(title = "比赛")
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "match_id", nullable = false, updatable = false)
     public Match match;
 
-    @Schema(description = "回合选手数据")
+    @Schema(title = "回合选手数据")
     @OneToMany(cascade = ALL, orphanRemoval = true, mappedBy = "matchRound")
     public Set<MatchRoundFighter> matchRoundFighters;
 
 
-    @Schema(description = "时间范围")
+    @Schema(title = "时间范围", implementation = String.class, example = "[2020-02-02T00:00:00Z,2022-02-02T00:00:00Z]")
     @Type(PostgreSQLRangeType.class)
     @Column(columnDefinition = "tstzrange", nullable = false)
     public Range<ZonedDateTime> timeRange;

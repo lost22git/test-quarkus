@@ -18,28 +18,28 @@ import java.util.Objects;
  * NOTE:
  * JPA not support record entity since it depend on reflection of no-arg constructor and getter/setter
  */
-@Schema(description = "选手")
+@Schema(title = "Fighter")
 @RegisterForReflection
 @Entity
 @Table(
     name = "fighter",
     indexes = {@Index(name = "uk-name", unique = true, columnList = "name")})
 public class Fighter extends PanacheEntity {
-    @Schema(description = "名称")
+    @Schema(title = "名称")
     @Column(nullable = false)
     public String name;
 
-    @Schema(description = "技能名称列表")
+    @Schema(title = "技能名称列表")
     //    @Convert(converter = StringListConverter.class)
     @Type(ListArrayType.class)
     @Column(columnDefinition = "text[]")
     public List<String> skill;
 
-    @Schema(description = "创建时间")
+    @Schema(title = "创建时间")
     @Column(nullable = false)
     public ZonedDateTime createdAt;
 
-    @Schema(description = "最近修改时间")
+    @Schema(title = "最近修改时间")
     public ZonedDateTime updatedAt;
 
 

@@ -14,7 +14,7 @@ import java.util.Objects;
 
 import static jakarta.persistence.FetchType.LAZY;
 
-@Schema(description = "参赛选手")
+@Schema(title = "MatchFighter")
 @RegisterForReflection
 @Entity
 @Table(name = "match_fighter", indexes = {
@@ -23,19 +23,19 @@ import static jakarta.persistence.FetchType.LAZY;
 public class MatchFighter extends PanacheEntity {
 
     @JsonIgnore
-    @Schema(description = "比赛")
+    @Schema(title = "比赛")
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "match_id", nullable = false, updatable = false)
     public Match match;
 
 
     //    @JsonIgnore
-    @Schema(description = "选手")
+    @Schema(title = "选手")
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "fighter_id", nullable = false, updatable = false)
     public Fighter fighter;
 
-    @Schema(description = "时间范围")
+    @Schema(title = "时间范围", implementation = String.class, example = "[2020-02-02T00:00:00Z,2022-02-02T00:00:00Z]")
     @Type(PostgreSQLRangeType.class)
     @Column(columnDefinition = "tstzrange")
     public Range<ZonedDateTime> timeRange;

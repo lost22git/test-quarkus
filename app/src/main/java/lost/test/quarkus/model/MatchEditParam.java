@@ -10,16 +10,16 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import java.time.ZonedDateTime;
 import java.util.Set;
 
-@Schema(description = "MatchAddFightersParam")
+@Schema(title = "MatchAddFightersParam")
 public record MatchEditParam(
-    @Schema(description = "match id")
+    @Schema(title = "match id")
     long matchId,
 
-    @Schema(description = "选手 id 列表")
+    @Schema(title = "选手 id 列表")
     @NotEmpty
     Set<@NotNull Long> fighterIds,
 
-    @Schema(description = "时间范围")
+    @Schema(title = "时间范围", implementation = String.class, example = "[2020-02-02T00:00:00Z,2022-02-02T00:00:00Z]")
     @NotNull
     @RangeUpperBound
     @RangeLowerBound

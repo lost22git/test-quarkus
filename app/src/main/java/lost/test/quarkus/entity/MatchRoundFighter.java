@@ -10,7 +10,7 @@ import java.util.Objects;
 
 import static jakarta.persistence.FetchType.LAZY;
 
-@Schema(description = "选手回合数据")
+@Schema(title = "MatchRoundFighter")
 @RegisterForReflection
 @Entity
 @Table(name = "match_round_fighter")
@@ -19,14 +19,14 @@ public class MatchRoundFighter extends PanacheEntityBase {
 
     @Id
     @JsonIgnore
-    @Schema(description = "回合")
+    @Schema(title = "回合")
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "match_round_id", nullable = false, updatable = false)
     public MatchRound matchRound;
 
     @Id
     @JsonIgnore
-    @Schema(description = "选手")
+    @Schema(title = "选手")
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "fighter_id", nullable = false, updatable = false)
     public Fighter fighter;

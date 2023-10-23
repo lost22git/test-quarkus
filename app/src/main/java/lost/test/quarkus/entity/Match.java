@@ -14,7 +14,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Schema(description = "比赛")
+@Schema(title = "Match")
 @RegisterForReflection
 @Entity
 @Table(
@@ -22,26 +22,27 @@ import java.util.stream.Collectors;
 )
 public class Match extends PanacheEntity {
 
-    @Schema(description = "参赛选手列表")
+    @Schema(title = "参赛选手列表")
     @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true, mappedBy = "match")
     public Set<MatchFighter> matchFighters;
 
 
-    @Schema(description = "回合列表")
+    @Schema(title = "回合列表")
     @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true, mappedBy = "match")
     public Set<MatchRound> matchRounds;
 
-    @Schema(description = "时间范围")
+
+    @Schema(title = "时间范围", implementation = String.class, example = "[2020-02-02T00:00:00Z,2022-02-02T00:00:00Z]")
     @Type(PostgreSQLRangeType.class)
     @Column(columnDefinition = "tstzrange", nullable = false)
     public Range<ZonedDateTime> timeRange;
 
 
-    @Schema(description = "创建时间")
+    @Schema(title = "创建时间")
     @Column(nullable = false)
     public ZonedDateTime createdAt;
 
-    @Schema(description = "最近更新时间")
+    @Schema(title = "最近更新时间")
     public ZonedDateTime updatedAt;
 
     public Match setFighters(List<Fighter> fighters,
