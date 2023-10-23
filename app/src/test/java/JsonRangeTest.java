@@ -17,14 +17,6 @@ public class JsonRangeTest {
     @Inject
     ObjectMapper objectMapper;
 
-    public record V(
-        @JsonSerialize(using = RangeJsonSerde.Ser.class)
-        @JsonDeserialize(using = RangeJsonSerde.Deser.class)
-        Range<ZonedDateTime> range
-    ) {
-
-    }
-
     @Test
     void rangeJsonSer() throws JsonProcessingException {
         var lower = "2023-10-21T03:20:45.971689Z";
@@ -50,5 +42,13 @@ public class JsonRangeTest {
         assertThat(v.range().isLowerBoundClosed()).isTrue();
         assertThat(v.range().upper()).isEqualTo(upper);
         assertThat(v.range.isUpperBoundClosed()).isFalse();
+    }
+
+    public record V(
+        @JsonSerialize(using = RangeJsonSerde.Ser.class)
+        @JsonDeserialize(using = RangeJsonSerde.Deser.class)
+        Range<ZonedDateTime> range
+    ) {
+
     }
 }

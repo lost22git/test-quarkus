@@ -91,3 +91,20 @@ create table match_round
 alter table match_round
   owner to lost;
 
+
+------- MatchRoundFighter --------------
+
+create table match_round_fighter
+(
+  fighter_id     bigint not null
+    constraint fklpn68e04h2q086c79wxikt3qp
+      references fighter,
+  match_round_id bigint not null
+    constraint fk4vgdj42220p9qto8l6jqkw5gk
+      references match_round,
+  primary key (fighter_id, match_round_id)
+);
+
+alter table match_round_fighter
+  owner to lost;
+

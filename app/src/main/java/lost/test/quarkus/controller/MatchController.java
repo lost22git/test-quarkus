@@ -16,6 +16,7 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static java.time.ZonedDateTime.now;
@@ -117,15 +118,25 @@ public class MatchController {
 
         var matchId = matchRoundCreateParam.matchId();
         var timeRange = matchRoundCreateParam.timeRange();
+        var fighterIds = matchRoundCreateParam.fighterIds();
 
-        var match = (Match) Match.findById(matchId);
-        if (match == null) throw new MyError("match不存在");
+        // 检查: matchId 是否有效
+        var foundMatch = (Match) Match.findById(matchId);
+        if (foundMatch == null) throw new MyError("match不存在");
 
-        if (!match.timeRange.contains(timeRange))
-            throw new MyError("round时间范围%s不在match时间范围%s内".formatted(timeRange, match.timeRange));
+
+        // 检查: timeRange 是否有效
+        if (!foundMatch.timeRange.contains(timeRange))
+            throw new MyError("round时间范围%s不在match时间范围%s内".formatted(timeRange, foundMatch.timeRange));
+
+        // 检查：fighterIds 是否有效
+        var allowFighterIds = foundMatch.matchFighters.stream().map(v -> v.fighter.id).collect(Collectors.toSet());
+        if (!allowFighterIds.containsAll(fighterIds))
+            throw new MyError("fighter不存在参赛列表中");
 
         var matchRound = new MatchRound();
-        matchRound.match = match;
+        matchRound.setFighters(fighterIds);
+        matchRound.match = foundMatch;
         matchRound.timeRange = timeRange;
         matchRound.persistAndFlush();
 

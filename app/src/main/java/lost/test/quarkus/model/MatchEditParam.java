@@ -14,6 +14,8 @@ import java.util.Set;
 public record MatchEditParam(
     @Schema(description = "match id")
     long matchId,
+
+    @Schema(description = "选手 id 列表")
     @NotEmpty
     Set<@NotNull Long> fighterIds,
 

@@ -30,7 +30,7 @@ public @interface RangeLowerBound {
         @Override
         public boolean isValid(Range<?> range,
                                ConstraintValidatorContext constraintValidatorContext) {
-            if(range==null) return false;
+            if (range == null) return false;
             return range.hasLowerBound();
         }
     }

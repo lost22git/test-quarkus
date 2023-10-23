@@ -14,7 +14,7 @@ import java.util.Objects;
 
 import static jakarta.persistence.FetchType.LAZY;
 
-@Schema(description = "参赛格斗家")
+@Schema(description = "参赛选手")
 @RegisterForReflection
 @Entity
 @Table(name = "match_fighter", indexes = {
@@ -23,14 +23,14 @@ import static jakarta.persistence.FetchType.LAZY;
 public class MatchFighter extends PanacheEntity {
 
     @JsonIgnore
-    @Schema(description = "格斗比赛")
+    @Schema(description = "比赛")
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "match_id", nullable = false, updatable = false)
     public Match match;
 
 
     //    @JsonIgnore
-    @Schema(description = "格斗家")
+    @Schema(description = "选手")
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "fighter_id", nullable = false, updatable = false)
     public Fighter fighter;
@@ -46,11 +46,11 @@ public class MatchFighter extends PanacheEntity {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
         MatchFighter that = (MatchFighter) object;
-        return Objects.equals(match.id, that.match.id) && Objects.equals(fighter.id, that.fighter.id);
+        return Objects.equals(match, that.match) && Objects.equals(fighter, that.fighter);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(match.id, fighter.id);
+        return Objects.hash(match, fighter);
     }
 }

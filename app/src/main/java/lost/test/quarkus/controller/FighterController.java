@@ -69,7 +69,7 @@ public class FighterController {
     @Path("/{name}")
     @Produces(APPLICATION_JSON)
     @Transactional
-    public Result<Boolean> deleteaFighter(@PathParam("name") String name) {
+    public Result<Boolean> deleteFighter(@PathParam("name") String name) {
         var found = Fighter.find("name", name).singleResultOptional();
         found.ifPresent(PanacheEntityBase::delete);
         return ok(true);

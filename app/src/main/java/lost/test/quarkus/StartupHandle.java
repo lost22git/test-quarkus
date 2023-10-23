@@ -5,10 +5,7 @@ import io.quarkus.runtime.StartupEvent;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.transaction.Transactional;
-import lost.test.quarkus.entity.Fighter;
-import lost.test.quarkus.entity.Match;
-import lost.test.quarkus.entity.MatchFighter;
-import lost.test.quarkus.entity.MatchRound;
+import lost.test.quarkus.entity.*;
 import lost.test.quarkus.mapper.FighterMapper;
 import lost.test.quarkus.model.FighterCreateParam;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -21,17 +18,9 @@ import static java.time.ZonedDateTime.now;
 
 @ApplicationScoped
 public class StartupHandle {
+    private static final Logger LOG = LoggerFactory.getLogger(StartupHandle.class);
     @ConfigProperty(name = "quarkus.http.port")
     int port;
-
-    record StartupInfo(
-        long pid,
-        int port,
-        Runtime.Version jvmVersion
-    ) {
-    }
-
-    private static final Logger LOG = LoggerFactory.getLogger(StartupHandle.class);
 
     @IfBuildProfile("dev")
     @Transactional
@@ -39,6 +28,7 @@ public class StartupHandle {
                        StartupEvent startupEvent
     ) {
         LOG.info("清空所有表");
+        MatchRoundFighter.deleteAll();
         MatchRound.deleteAll();
         MatchFighter.deleteAll();
         Match.deleteAll();
@@ -69,8 +59,14 @@ public class StartupHandle {
         LOG.info("Startup info: {}", startupInfo);
     }
 
-
     @IfBuildProfile("prod")
     public void print(@Observes StartupEvent startupEvent) {
+    }
+
+    record StartupInfo(
+        long pid,
+        int port,
+        Runtime.Version jvmVersion
+    ) {
     }
 }

@@ -9,5 +9,6 @@ import java.util.List;
 
 @Schema(description = "FighterEditParam")
 public record FighterEditParam(
-        @Pattern(regexp = Patterns.name) @Schema(description = "名称") String name,
-        @NotEmpty @Schema(description = "技能名称列表") List<@Pattern(regexp = Patterns.name) String> skill) {}
+    @Pattern(regexp = Patterns.name) @Schema(description = "名称") String name,
+    @NotEmpty @Schema(description = "技能名称列表") List<@Pattern(regexp = Patterns.name) String> skill) {
+}

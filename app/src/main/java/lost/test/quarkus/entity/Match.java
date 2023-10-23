@@ -10,10 +10,11 @@ import org.hibernate.annotations.Type;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Schema(description = "格斗比赛")
+@Schema(description = "比赛")
 @RegisterForReflection
 @Entity
 @Table(
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
 )
 public class Match extends PanacheEntity {
 
-    @Schema(description = "参赛格斗家列表")
+    @Schema(description = "参赛选手列表")
     @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true, mappedBy = "match")
     public Set<MatchFighter> matchFighters;
 
@@ -71,5 +72,18 @@ public class Match extends PanacheEntity {
         this.matchFighters.addAll(addMatchFighters);
 
         return this;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Match match = (Match) object;
+        return Objects.equals(id, match.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

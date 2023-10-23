@@ -12,7 +12,7 @@ import java.util.Set;
 
 @Schema(description = "MatchCreateParam")
 public record MatchCreateParam(
-    @Schema(description = "格斗家列表")
+    @Schema(description = "选手 id 列表")
     @NotEmpty
     Set<@NotNull Long> fighterIds,
 

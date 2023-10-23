@@ -17,9 +17,8 @@ import java.io.IOException;
 public interface RangeJsonSerde {
 
     class Ser extends StdSerializer<Range<?>> {
-        private static final ObjectMapper mapper;
         public static final SimpleModule module;
-
+        private static final ObjectMapper mapper;
 
         static {
             mapper = new ObjectMapper();
@@ -82,6 +81,8 @@ public interface RangeJsonSerde {
 
     class Deser<T extends Comparable<? super T>> extends StdDeserializer<Range<T>> implements ContextualDeserializer {
 
+        private JavaType type;
+
         public Deser() {
             this(
                 Ser.mapper.getTypeFactory().constructType(new TypeReference<Range<?>>() {
@@ -92,8 +93,6 @@ public interface RangeJsonSerde {
         protected Deser(JavaType type) {
             super(type);
         }
-
-        private JavaType type;
 
         @Override
         public JsonDeserializer<?> createContextual(DeserializationContext ctxt,

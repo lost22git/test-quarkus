@@ -12,12 +12,13 @@ import org.hibernate.annotations.Type;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * NOTE:
  * JPA not support record entity since it depend on reflection of no-arg constructor and getter/setter
  */
-@Schema(description = "格斗家")
+@Schema(description = "选手")
 @RegisterForReflection
 @Entity
 @Table(
@@ -41,4 +42,17 @@ public class Fighter extends PanacheEntity {
     @Schema(description = "最近修改时间")
     public ZonedDateTime updatedAt;
 
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Fighter fighter = (Fighter) object;
+        return Objects.equals(id, fighter.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
