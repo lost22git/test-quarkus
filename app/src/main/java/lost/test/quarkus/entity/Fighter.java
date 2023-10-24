@@ -32,7 +32,6 @@ public class Fighter extends PanacheEntity {
     public String name;
 
     @Schema(title = "技能名称列表")
-    //    @Convert(converter = StringListConverter.class)
     @Type(ListArrayType.class)
     @Column(columnDefinition = "text[]")
     public List<String> skill;
