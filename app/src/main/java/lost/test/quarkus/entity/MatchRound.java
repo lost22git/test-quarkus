@@ -42,7 +42,7 @@ public class MatchRound extends PanacheEntity {
         this.matchRoundFighters = fighterIds.stream().map(v -> {
             var matchRoundFighter = new MatchRoundFighter();
             matchRoundFighter.matchRound = this;
-            matchRoundFighter.fighter = Fighter.getEntityManager().getReference(Fighter.class, v);
+            matchRoundFighter.fighter = getEntityManager().getReference(Fighter.class, v);
             return matchRoundFighter;
         }).collect(Collectors.toSet());
         return this;
