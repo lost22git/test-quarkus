@@ -4,6 +4,7 @@ import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
+import lost.test.quarkus.MyError;
 import lost.test.quarkus.common.Result;
 import lost.test.quarkus.entity.Fighter;
 import lost.test.quarkus.mapper.FighterMapper;
@@ -34,7 +35,7 @@ public class FighterController {
     @Path("/{name}")
     @Produces(APPLICATION_JSON)
     public Result<Fighter> findFighterByName(@PathParam("name") String name) {
-        return ok((Fighter) Fighter.find("name", name).singleResultOptional().orElse(null));
+        return ok(Fighter.findOneByName(name).orElse(null));
     }
 
     @Operation(summary = "新增一个 fighter")
@@ -57,7 +58,8 @@ public class FighterController {
     @Consumes(APPLICATION_JSON)
     @Transactional
     public Result<Fighter> editFighter(@Valid FighterEditParam fighterEditParam) {
-        var fighterUpdate = (Fighter) Fighter.find("name", fighterEditParam.name()).singleResult();
+        var fighterUpdate = Fighter.findOneByName(fighterEditParam.name())
+            .orElseThrow(() -> new MyError("Fighter不存在"));
         fighterUpdate.skill = fighterEditParam.skill();
         fighterUpdate.updatedAt = now();
         fighterUpdate.persistAndFlush();
@@ -70,7 +72,7 @@ public class FighterController {
     @Produces(APPLICATION_JSON)
     @Transactional
     public Result<Boolean> deleteFighter(@PathParam("name") String name) {
-        var found = Fighter.find("name", name).singleResultOptional();
+        var found = Fighter.findOneByName(name);
         found.ifPresent(PanacheEntityBase::delete);
         return ok(true);
     }

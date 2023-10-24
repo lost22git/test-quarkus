@@ -6,9 +6,6 @@ dependencies {
   // logging
   implementation(libs.logback)
 
-  // jackson json
-  implementation(libs.bundles.jackson)
-
   // record builder
   annotationProcessor(libs.record.builder.processor)
   implementation(libs.record.builder)
@@ -16,6 +13,9 @@ dependencies {
   // mapstruct
   annotationProcessor(libs.mapstruct.processor)
   implementation(libs.mapstruct)
+
+  // hypersistence for hibernate
+  implementation libs.hypersistence
 
   // quarkus
   implementation(enforcedPlatform(libs.quarkus))
@@ -25,11 +25,9 @@ dependencies {
   implementation 'io.quarkus:quarkus-smallrye-openapi'
   implementation 'io.quarkus:quarkus-resteasy-reactive'
   implementation 'io.quarkus:quarkus-hibernate-orm-panache'
-  implementation libs.hypersistence
   implementation 'io.quarkus:quarkus-jdbc-postgresql'
   implementation 'io.quarkus:quarkus-flyway'
   implementation 'io.quarkus:quarkus-arc'
-  implementation 'io.quarkus:quarkus-hibernate-orm'
   implementation 'io.quarkus:quarkus-micrometer-registry-prometheus'
   testImplementation 'io.quarkus:quarkus-junit5'
   testImplementation 'io.rest-assured:rest-assured'

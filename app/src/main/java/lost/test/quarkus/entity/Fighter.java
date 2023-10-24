@@ -11,8 +11,10 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.hibernate.annotations.Type;
 
 import java.time.ZonedDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * NOTE:
@@ -41,6 +43,14 @@ public class Fighter extends PanacheEntity {
 
     @Schema(title = "最近修改时间")
     public ZonedDateTime updatedAt;
+
+    public static List<Fighter> findByIds(Collection<Long> fighterIds) {
+        return Fighter.find("id in (?1)", fighterIds).list();
+    }
+
+    public static Optional<Fighter> findOneByName(String name) {
+        return Fighter.find("name", name).singleResultOptional();
+    }
 
 
     @Override

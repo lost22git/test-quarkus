@@ -35,7 +35,7 @@ public class MatchController {
         var timeRange = matchCreateParam.timeRange();
         var fighterIds = matchCreateParam.fighterIds();
 
-        var foundFighters = Fighter.find("where id in (?1)", fighterIds).list().stream().map(Fighter.class::cast).toList();
+        var foundFighters = Fighter.findByIds(fighterIds);
         if (foundFighters.isEmpty())
             throw new MyError("fighter不存在");
 
@@ -60,8 +60,7 @@ public class MatchController {
         var timeRange = matchEditParam.timeRange();
 
         // 检查添加的 fighterIds 是否有效
-        var foundFighters = Fighter.find("where id in (?1)", fighterIds).list()
-            .stream().map(Fighter.class::cast).toList();
+        var foundFighters = Fighter.findByIds(fighterIds);
         if (foundFighters.isEmpty())
             throw new MyError("fighters不存在");
 
