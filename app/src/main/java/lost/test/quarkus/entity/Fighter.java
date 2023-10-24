@@ -16,10 +16,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-/**
- * NOTE:
- * JPA not support record entity since it depend on reflection of no-arg constructor and getter/setter
- */
 @Schema(title = "Fighter")
 @RegisterForReflection
 @Entity
